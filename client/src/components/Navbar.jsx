@@ -28,6 +28,12 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+
   const close = () => setOpen(false);
 
   return (
@@ -49,22 +55,24 @@ export default function Navbar() {
           )}
         </NavLink>
 
+        {/* Backdrop */}
+        {open && (
+          <div
+            aria-hidden="true"
+            style={{ position: 'fixed', inset: 0, zIndex: 800, background: 'rgba(0,0,0,.45)' }}
+            onClick={close}
+          />
+        )}
+
         <button
           className={`nav-toggle${open ? ' open' : ''}`}
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Chiudi menu' : 'Apri menu'}
           aria-expanded={open}
+          style={{ position: 'relative', zIndex: 802 }}
         >
           <span /><span /><span />
         </button>
-
-        {/* Backdrop */}
-        {open && (
-          <div
-            style={{ position: 'fixed', inset: 0, zIndex: 800 }}
-            onClick={close}
-          />
-        )}
 
         <nav className={`nav-menu${open ? ' open' : ''}`} style={{ zIndex: 801 }}>
           {LINKS.map(({ to, label, end }) => (
